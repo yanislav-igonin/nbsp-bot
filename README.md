@@ -4,4 +4,4 @@ Bot for inserting non-breaking space in text between 2 line breaks. Written for 
 `'\n\n'` -> `'\n ⠀\n'`
 
 ## Check it out
-[Running in prod](t.me/nbsp_bot)
+[Running in prod](https://t.me/nbsp_bot)
