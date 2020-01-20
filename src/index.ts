@@ -13,7 +13,12 @@ bot.catch((err: Error): void => {
 });
 
 bot.start((ctx: ContextMessageUpdate): void => {
-  ctx.reply(`${new Date().toLocaleString()} - start`);
+  ctx.reply(
+    'Привет.\n\n'
+    + 'Я вставляю невидимый пробел между двумя переносами строк'
+    + ' для создания абзацев в инстаграме.\n\n'
+    + 'Отправь мне текст, который требуется обработать.',
+  );
 });
 
 bot.on('text', (ctx: TextContextMessageUpdate): void => {
