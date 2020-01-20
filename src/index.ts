@@ -4,8 +4,9 @@ import * as crypto from 'crypto';
 
 import { app } from './config';
 import { logger } from './modules';
+import { TextContextMessageUpdate } from './interface';
 
-const bot = new Telegraf(app.botToken);
+const bot: Telegraf<TextContextMessageUpdate> = new Telegraf(app.botToken);
 
 bot.catch((err: Error): void => {
   logger.error(`ERROR: ${err}\n`);
@@ -15,9 +16,9 @@ bot.start((ctx: ContextMessageUpdate): void => {
   ctx.reply(`${new Date().toLocaleString()} - start`);
 });
 
-bot.on('text', (ctx: ContextMessageUpdate): void => {
-  const message = ctx.update.message ? ctx.update.message.text : '';
-  ctx.reply(`${new Date().toLocaleString()} - ${message}`);
+bot.on('text', (ctx: TextContextMessageUpdate): void => {
+  const newMessage = ctx.update.message.text?.replace(/\n\n/g, '\n⠀\n');
+  ctx.reply(newMessage);
 });
 
 const launch = async (): Promise<void> => {
