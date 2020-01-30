@@ -10,7 +10,7 @@ Bot for inserting non-breaking space in text between 2 line breaks. Written for 
 ### Development
 This will run container with `nodemon` that restarts app on every change in `src/` folder.
 ```bash
-BOT_TOKEN=... docker-compsoe -f development.docker-compose.yml up --build
+BOT_TOKEN=... docker-compose -f development.docker-compose.yml up --build
 ```
 
 ### Production
