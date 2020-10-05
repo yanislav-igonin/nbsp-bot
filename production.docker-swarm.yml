@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   app:
-    image: registry.gitlab.com/yanislav-igonin/nbsp-bot:latest
+    image: docker.pkg.github.com/yanislav-igonin/nbsp-bot/nbsp-bot:latest
     networks:
       - web
     environment: 
