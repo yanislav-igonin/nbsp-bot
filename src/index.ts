@@ -8,8 +8,7 @@ import { TextContextMessageUpdate } from './interface';
 const getCountText = (text: string) => {
   const { length } = text;
   const lengthWithoutSpaces = text
-    .replace(/ /g, '')
-    .replace(/\n/g, '')
+    .replace(/ |\n/g, '')
     .length;
   return `
 Количество символов с пробелами - ${length}
@@ -28,7 +27,8 @@ bot.start((ctx: ContextMessageUpdate): void => {
     'Привет.\n\n'
     + 'Я вставляю невидимый пробел между двумя переносами строк'
     + ' для создания абзацев в инстаграме.\n\n'
-    + 'Отправь мне текст, который требуется обработать.',
+    + 'Отправь мне текст, который требуется обработать.\n\n'
+    + 'Также подсчитываю количество символов с пробелами и без',
   );
 });
 
