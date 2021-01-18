@@ -5,6 +5,18 @@ import { app } from './config';
 import { logger } from './modules';
 import { TextContextMessageUpdate } from './interface';
 
+const getCountText = (text: string) => {
+  const { length } = text;
+  const lengthWithoutSpaces = text
+    .replace(/ /g, '')
+    .replace(/\n/g, '')
+    .length;
+  return `
+Количество символов с пробелами - ${length}
+Количество символов без пробелов - ${lengthWithoutSpaces}
+  `;
+};
+
 const bot: Telegraf<TextContextMessageUpdate> = new Telegraf(app.botToken);
 
 bot.catch((err: Error): void => {
@@ -20,9 +32,11 @@ bot.start((ctx: ContextMessageUpdate): void => {
   );
 });
 
-bot.on('text', (ctx: TextContextMessageUpdate): void => {
-  const newMessage = ctx.update.message.text?.replace(/\n\n/g, '\n⠀\n');
-  ctx.reply(newMessage);
+bot.on('text', async (ctx: TextContextMessageUpdate): Promise<void> => {
+  const { text } = ctx.update.message;
+  const nbspEditedText = text.replace(/\n\n/g, '\n⠀\n');
+  await ctx.reply(nbspEditedText);
+  await ctx.reply(getCountText(text));
 });
 
 const launch = async (): Promise<void> => {
