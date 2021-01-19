@@ -1,4 +1,4 @@
-import { ContextMessageUpdate } from 'telegraf';
+import { Context } from 'telegraf';
 import { User, Message, Update } from 'telegraf/typings/telegram-types.d';
 
 interface TextMessage extends Message {
@@ -10,6 +10,6 @@ interface TextUpdate extends Update {
   message: TextMessage;
 }
 
-export interface TextContextMessageUpdate extends ContextMessageUpdate {
+export interface TextContext extends Context {
   update: TextUpdate;
 }

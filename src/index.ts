@@ -1,9 +1,9 @@
-import Telegraf, { ContextMessageUpdate } from 'telegraf';
+import Telegraf from 'telegraf';
 import * as ngrok from 'ngrok';
 
 import { app } from './config';
 import { logger } from './modules';
-import { TextContextMessageUpdate } from './interface';
+import { TextContext } from './interface';
 
 const getCountText = (text: string) => {
   const { length } = text;
@@ -16,13 +16,13 @@ const getCountText = (text: string) => {
   `;
 };
 
-const bot = new Telegraf<TextContextMessageUpdate>(app.botToken);
+const bot = new Telegraf<TextContext>(app.botToken);
 
 bot.catch((err: Error) => {
   logger.error(`ERROR: ${err}\n`);
 });
 
-bot.start((ctx: ContextMessageUpdate) => {
+bot.start((ctx: TextContext) => {
   ctx.reply(
     'Привет.\n\n'
     + 'Я вставляю невидимый пробел между двумя переносами строк'
@@ -32,7 +32,7 @@ bot.start((ctx: ContextMessageUpdate) => {
   );
 });
 
-bot.on('text', async (ctx: TextContextMessageUpdate) => {
+bot.on('text', async (ctx: TextContext) => {
   const { text } = ctx.update.message;
   const nbspEditedText = text.replace(/\n\n/g, '\n⠀\n');
   await ctx.reply(nbspEditedText);
