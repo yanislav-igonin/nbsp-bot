@@ -1,8 +1,9 @@
-import { Telegraf } from 'telegraf';
+import Telegraf from 'telegraf';
 import * as ngrok from 'ngrok';
 
 import { app } from './config';
 import { logger } from './modules';
+import { TextContext } from './interface';
 
 const getCountText = (text: string) => {
   const { length } = text;
@@ -15,13 +16,13 @@ const getCountText = (text: string) => {
   `;
 };
 
-const bot = new Telegraf(app.botToken);
+const bot = new Telegraf<TextContext>(app.botToken);
 
-bot.catch((err) => {
+bot.catch((err: Error) => {
   logger.error(`ERROR: ${err}\n`);
 });
 
-bot.start((ctx) => {
+bot.start((ctx: TextContext) => {
   ctx.reply(
     'Привет.\n\n'
     + 'Я вставляю невидимый пробел между двумя переносами строк'
@@ -31,15 +32,11 @@ bot.start((ctx) => {
   );
 });
 
-bot.on('text', async (ctx) => {
+bot.on('text', async (ctx: TextContext) => {
   const { text } = ctx.update.message;
   const nbspEditedText = text.replace(/\n\n/g, '\n⠀\n');
   await ctx.reply(nbspEditedText);
   await ctx.reply(getCountText(text));
-});
-
-bot.on('photo', (ctx) => {
-
 });
 
 const launch = async () => {
@@ -47,7 +44,7 @@ const launch = async () => {
 
   if (app.isWebhookDisabled) {
     await bot.telegram.deleteWebhook();
-    bot.launch();
+    bot.startPolling();
   } else {
     let host: string;
     if (app.env === 'development') {
