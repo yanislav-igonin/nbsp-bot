@@ -1,15 +1,18 @@
 import { Context } from 'telegraf';
-import { User, Message, Update } from 'telegraf/typings/telegram-types.d';
+import {
+  User, Message, Update, PhotoSize,
+} from 'telegraf/typings/telegram-types.d';
 
-interface TextMessage extends Message {
+interface CustomMessage extends Message {
   text: string;
   from: User;
+  photo: PhotoSize[];
 }
 
-interface TextUpdate extends Update {
-  message: TextMessage;
+interface CustomUpdate extends Update {
+  message: CustomMessage;
 }
 
-export interface TextContext extends Context {
-  update: TextUpdate;
+export interface CustomContext extends Context {
+  update: CustomUpdate;
 }
