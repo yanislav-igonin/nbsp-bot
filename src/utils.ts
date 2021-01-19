@@ -13,7 +13,7 @@ export const getCountText = (text: string) => {
 };
 
 
-export const createDownloadsDir = () => new Promise((resolve) => {
+export const createDownloadsDir = () => new Promise<void>((resolve) => {
   const dirPath = path.resolve(__dirname, '..', 'downloads');
-  fs.mkdir(dirPath, () => resolve(undefined));
+  fs.mkdir(dirPath, () => resolve());
 });
