@@ -16,13 +16,13 @@ const getCountText = (text: string) => {
   `;
 };
 
-const bot: Telegraf<TextContextMessageUpdate> = new Telegraf(app.botToken);
+const bot = new Telegraf<TextContextMessageUpdate>(app.botToken);
 
-bot.catch((err: Error): void => {
+bot.catch((err: Error) => {
   logger.error(`ERROR: ${err}\n`);
 });
 
-bot.start((ctx: ContextMessageUpdate): void => {
+bot.start((ctx: ContextMessageUpdate) => {
   ctx.reply(
     'Привет.\n\n'
     + 'Я вставляю невидимый пробел между двумя переносами строк'
@@ -32,14 +32,14 @@ bot.start((ctx: ContextMessageUpdate): void => {
   );
 });
 
-bot.on('text', async (ctx: TextContextMessageUpdate): Promise<void> => {
+bot.on('text', async (ctx: TextContextMessageUpdate) => {
   const { text } = ctx.update.message;
   const nbspEditedText = text.replace(/\n\n/g, '\n⠀\n');
   await ctx.reply(nbspEditedText);
   await ctx.reply(getCountText(text));
 });
 
-const launch = async (): Promise<void> => {
+const launch = async () => {
   logger.info('release -', app.release);
 
   if (app.isWebhookDisabled) {
@@ -66,8 +66,8 @@ const launch = async (): Promise<void> => {
 };
 
 launch()
-  .then((): void => logger.info('all systems nominal'))
-  .catch((err: Error): void => {
+  .then(() => logger.info('all systems nominal'))
+  .catch((err: Error) => {
     logger.error('bot - offline');
     logger.error(err);
   });
