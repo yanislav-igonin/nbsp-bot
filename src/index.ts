@@ -4,7 +4,7 @@ import * as ngrok from 'ngrok';
 import { app } from './config';
 import { logger } from './modules';
 import { CustomContext } from './interface';
-import { createDownloadsDir, getCountText } from './utils';
+import { createDownloadsDir, getCountText, downloadFile } from './utils';
 
 const bot = new Telegraf<CustomContext>(app.botToken);
 
@@ -29,8 +29,16 @@ bot.on('text', async (ctx: CustomContext) => {
   await ctx.reply(getCountText(text));
 });
 
-bot.on('photo', (ctx) => {
-
+bot.on('photo', async (ctx) => {
+  const photos = ctx.update.message.photo;
+  const largestPhoto = photos[photos.length - 1];
+  const largestPhotoId = largestPhoto.file_id;
+  const fileInfo = await ctx.telegram.getFile(largestPhotoId);
+  const fileUrl = await ctx.telegram.getFileLink(largestPhotoId);
+  const fileName = fileInfo.file_path?.split('/')[1];
+  if (fileName === undefined) throw new Error('File name is undefined.');
+  const filePath = await downloadFile(fileUrl, fileName);
+  console.log('DEBUG ~ file: index.ts ~ line 41 ~ bot.on ~ filePath', filePath);
 });
 
 const launch = async () => {
