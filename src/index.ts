@@ -1,45 +1,48 @@
-import Telegraf, { ContextMessageUpdate } from 'telegraf';
+import Telegraf from 'telegraf';
 import * as ngrok from 'ngrok';
 
 import { app } from './config';
 import { logger } from './modules';
-import { TextContextMessageUpdate } from './interface';
+import { CustomContext } from './interface';
+import { getCountText, recognizeText } from './utils';
 
-const getCountText = (text: string) => {
-  const { length } = text;
-  const lengthWithoutSpaces = text
-    .replace(/ |\n/g, '')
-    .length;
-  return `
-Количество символов с пробелами - ${length}
-Количество символов без пробелов - ${lengthWithoutSpaces}
-  `;
-};
+const bot = new Telegraf<CustomContext>(app.botToken);
 
-const bot: Telegraf<TextContextMessageUpdate> = new Telegraf(app.botToken);
-
-bot.catch((err: Error): void => {
+bot.catch((err: Error) => {
   logger.error(`ERROR: ${err}\n`);
 });
 
-bot.start((ctx: ContextMessageUpdate): void => {
+bot.start((ctx: CustomContext) => {
   ctx.reply(
     'Привет.\n\n'
-    + 'Я вставляю невидимый пробел между двумя переносами строк'
-    + ' для создания абзацев в инстаграме.\n\n'
+    + '1. Я вставляю невидимый пробел между двумя переносами строк'
+    + ' для создания абзацев в инстаграме.\n'
     + 'Отправь мне текст, который требуется обработать.\n\n'
-    + 'Также подсчитываю количество символов с пробелами и без',
+    + '2. Я распознаю руский текст на картинках.\n'
+    + 'Просто скинь мне любую картинку и я скину обратно распознанный текст\n\n'
+    + 'Также подсчитываю количество символов с пробелами и без.',
   );
 });
 
-bot.on('text', async (ctx: TextContextMessageUpdate): Promise<void> => {
+bot.on('text', async (ctx: CustomContext) => {
   const { text } = ctx.update.message;
   const nbspEditedText = text.replace(/\n\n/g, '\n⠀\n');
   await ctx.reply(nbspEditedText);
   await ctx.reply(getCountText(text));
 });
 
-const launch = async (): Promise<void> => {
+bot.on('photo', async (ctx) => {
+  const photos = ctx.update.message.photo;
+  const largestPhoto = photos[photos.length - 1];
+  const largestPhotoId = largestPhoto.file_id;
+  const fileUrl = await ctx.telegram.getFileLink(largestPhotoId);
+  await ctx.reply('Распознование текста начато. Время ожидания 1-2 минуты.');
+  const text = await recognizeText(fileUrl);
+  await ctx.reply(text);
+  await ctx.reply(getCountText(text));
+});
+
+const launch = async () => {
   logger.info('release -', app.release);
 
   if (app.isWebhookDisabled) {
@@ -66,8 +69,8 @@ const launch = async (): Promise<void> => {
 };
 
 launch()
-  .then((): void => logger.info('all systems nominal'))
-  .catch((err: Error): void => {
+  .then(() => logger.info('all systems nominal'))
+  .catch((err: Error) => {
     logger.error('bot - offline');
     logger.error(err);
   });

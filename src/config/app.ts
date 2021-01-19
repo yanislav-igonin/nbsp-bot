@@ -1,14 +1,4 @@
-interface AppConfig {
-  env: string;
-  botToken: string;
-  release: string;
-  webhookHost: string;
-  webhookPort: number;
-  webhookPath: string;
-  isWebhookDisabled: boolean;
-}
-
-const app: AppConfig = {
+const app = {
   env: process.env.NODE_ENV || 'development',
   botToken: process.env.BOT_TOKEN || '',
   release: process.env.CI_COMMIT_TAG || 'development',
@@ -20,4 +10,4 @@ const app: AppConfig = {
   isWebhookDisabled: process.env.IS_WEBHOOK_DISABLED === 'true',
 };
 
-export default app;
+export { app };
