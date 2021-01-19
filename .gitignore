@@ -104,4 +104,6 @@ dist
 .tern-port
 
 build/
-downloads/
+
+// tesseract pre-trained models
+*.traineddata

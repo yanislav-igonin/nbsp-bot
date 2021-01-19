@@ -4,7 +4,7 @@ import * as ngrok from 'ngrok';
 import { app } from './config';
 import { logger } from './modules';
 import { CustomContext } from './interface';
-import { createDownloadsDir, getCountText, downloadFile } from './utils';
+import { getCountText, recognizeText } from './utils';
 
 const bot = new Telegraf<CustomContext>(app.botToken);
 
@@ -33,18 +33,15 @@ bot.on('photo', async (ctx) => {
   const photos = ctx.update.message.photo;
   const largestPhoto = photos[photos.length - 1];
   const largestPhotoId = largestPhoto.file_id;
-  const fileInfo = await ctx.telegram.getFile(largestPhotoId);
   const fileUrl = await ctx.telegram.getFileLink(largestPhotoId);
-  const fileName = fileInfo.file_path?.split('/')[1];
-  if (fileName === undefined) throw new Error('File name is undefined.');
-  const filePath = await downloadFile(fileUrl, fileName);
-  console.log('DEBUG ~ file: index.ts ~ line 41 ~ bot.on ~ filePath', filePath);
+  await ctx.reply('Распознование текста начато. Время ожидания 1-2 минуты.');
+  const text = await recognizeText(fileUrl);
+  await ctx.reply(text);
+  await ctx.reply(getCountText(text));
 });
 
 const launch = async () => {
   logger.info('release -', app.release);
-
-  await createDownloadsDir();
 
   if (app.isWebhookDisabled) {
     await bot.telegram.deleteWebhook();
