@@ -31,7 +31,7 @@ services:
         traefik.http.services.nbsp-bot.loadbalancer.server.port: ${WEBHOOK_PORT}
 
         traefik.http.routers.nbsp-bot-secure.entrypoints: "https"
-        traefik.http.routers.nbsp-bot-secure.rule: "Host(`${WEBHOOK_URL}`) && PathPrefix(`${WEBHOOK_PATH}`)"
+        traefik.http.routers.nbsp-bot-secure.rule: "Host(`${WEBHOOK_HOST}`) && PathPrefix(`${WEBHOOK_PATH}`)"
         traefik.http.routers.nbsp-bot-secure.tls: "true"
         traefik.http.routers.nbsp-bot-secure.service: "nbsp-bot"
 
