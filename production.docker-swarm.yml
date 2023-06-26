@@ -4,6 +4,7 @@ services:
     image: ghcr.io/yanislav-igonin/nbsp-bot/nbsp-bot:latest
     # networks:
     #   - web
+    container_name: nbsp-bot
     environment: 
       - NODE_ENV=production
       - BOT_TOKEN=${BOT_TOKEN}
