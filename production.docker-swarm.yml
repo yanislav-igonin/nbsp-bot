@@ -1,16 +1,16 @@
 version: '3.7'
 services:
   app:
-    image: docker.pkg.github.com/yanislav-igonin/nbsp-bot/nbsp-bot:latest
-    networks:
-      - web
+    image: ghcr.io/yanislav-igonin/nbsp-bot/nbsp-bot:latest
+    # networks:
+    #   - web
     environment: 
       - NODE_ENV=production
       - BOT_TOKEN=${BOT_TOKEN}
       - WEBHOOK_HOST=${WEBHOOK_HOST}
       - WEBHOOK_PORT=${WEBHOOK_PORT}
       - WEBHOOK_PATH=${WEBHOOK_PATH}
-      - IS_WEBHOOK_DISABLED=false
+      - IS_WEBHOOK_DISABLED=true
     deploy:
       replicas: 1
       update_config:
@@ -35,7 +35,7 @@ services:
         traefik.http.routers.nbsp-bot-secure.tls: "true"
         traefik.http.routers.nbsp-bot-secure.service: "nbsp-bot"
 
-networks:
-  web:
-    driver: overlay
-    external: true
+# networks:
+#   web:
+#     driver: overlay
+#     external: true
